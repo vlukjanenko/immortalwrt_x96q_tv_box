@@ -1,0 +1,31 @@
+diff --git a/package/boot/uboot-sunxi/Makefile b/package/boot/uboot-sunxi/Makefile
+index 7cd061b03f..d7951ab6e3 100644
+--- a/package/boot/uboot-sunxi/Makefile
++++ b/package/boot/uboot-sunxi/Makefile
+@@ -364,6 +364,16 @@ define U-Boot/orangepi_zero2
+   ATF:=h616
+ endef
+ 
++define U-Boot/x96q
++  BUILD_SUBTARGET:=cortexa53
++  NAME:=TV box x96q
++  BUILD_DEVICES:=x96q
++  UBOOT_CONFIG:=x96q_lpddr3
++  DEPENDS:=+PACKAGE_u-boot-x96q:trusted-firmware-a-sunxi-h616
++  UENV:=h616
++  ATF:=h616
++endef
++
+ define U-Boot/orangepi_zero2w
+   BUILD_SUBTARGET:=cortexa53
+   NAME:=Xunlong Orange Pi Zero2W
+@@ -456,7 +466,8 @@ UBOOT_TARGETS := \
+ 	Sinovoip_BPI_M3 \
+ 	sopine_baseboard \
+ 	orangepi_zero_plus \
+-	libretech_all_h3_cc_h5
++	libretech_all_h3_cc_h5 \
++	x96q
+ 
+ UBOOT_CONFIGURE_VARS += USE_PRIVATE_LIBGCC=yes
+ 

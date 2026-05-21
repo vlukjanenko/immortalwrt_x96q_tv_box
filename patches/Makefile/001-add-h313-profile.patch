@@ -1,0 +1,19 @@
+diff --git a/target/linux/sunxi/image/cortexa53.mk b/target/linux/sunxi/image/cortexa53.mk
+index 50b286a98f..8c3226f361 100644
+--- a/target/linux/sunxi/image/cortexa53.mk
++++ b/target/linux/sunxi/image/cortexa53.mk
+@@ -119,6 +119,14 @@ define Device/xunlong_orangepi-pc2
+ endef
+ TARGET_DEVICES += xunlong_orangepi-pc2
+ 
++define Device/x96q
++  DEVICE_VENDOR := Allwinner
++  DEVICE_MODEL := X96Q TV-Box LPDDR3
++  SUNXI_DTS :=  $$(SUNXI_DTS_DIR)sun50i-h313-x96q-lpddr3
++  $(Device/sun50i-h616)
++endef
++TARGET_DEVICES += x96q
++
+ define Device/xunlong_orangepi-zero2
+   DEVICE_VENDOR := Xunlong
+   DEVICE_MODEL := Orange Pi Zero 2
