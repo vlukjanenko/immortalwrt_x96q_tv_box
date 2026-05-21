@@ -33,7 +33,6 @@ RUN apt-get update && apt-get install -y \
     fastjar \
     busybox \
     sudo \
-
     && apt-get clean
 
 # Создаем пользователя build, так как сборка под root не рекомендуется
