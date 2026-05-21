@@ -565,6 +565,7 @@ root@ImmortalWrt:~# ]
 ## 🤝 Support & Acknowledgments
 - Based on the [ImmortalWrt Project](https://github.com/immortalwrt/immortalwrt).
 - Kernel & Bootloader: Patched with Armbian patches from [sicXnull/armbian-build](https://github.com/sicXnull/armbian-build)
+- This project and documentation were developed with the help of Google Search and AI.
 
 ---
 Developed by [vlukjanenko].
