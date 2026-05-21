@@ -1,0 +1,35 @@
+name: Build ImmortalWrt
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          sudo apt-get clean
+
+      - name: Build Docker Image
+        run: docker build -t builder .
+
+      - name: Run Build inside Docker
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/home/build/workspace \
+            -w /home/build/workspace \
+            builder ./build.sh
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: immortalwrt-binaries
+          path: immortalwrt_src/bin/targets/
