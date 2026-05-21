@@ -60,7 +60,7 @@ jobs:
           tag_name: ${{ steps.tag.outputs.release_tag }}
           name: ImmortalWrt Build - ${{ steps.tag.outputs.release_date }}
           body: |
-            Automated ImmortalWrt build for Allwinner H313 platform.
+            Automated ImmortalWrt build for X96Q TV-Box LPDDR3.
             
             ### ℹ️ System Information
             - **Base version:** ImmortalWrt 25.12 (Target commit: `bce0a385ed95e93bc86bd6ff3e5ec5fb25293454`)
@@ -77,4 +77,4 @@ jobs:
       # Remove heavy binaries before caching to save storage space
       - name: Clean build directory before caching
         run: |
-          rm -rf immortalwrt_src/bin/targets/
+          sudo rm -rf immortalwrt_src/bin/targets/
