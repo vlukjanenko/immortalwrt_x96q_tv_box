@@ -1,13 +1,20 @@
-name: Build ImmortalWrt
+name: Build and Release ImmortalWrt
 
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
+# Force using Node.js 24 to get rid of deprecation warnings
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-22.04
+
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -18,18 +25,56 @@ jobs:
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
           sudo apt-get clean
 
+      # Cache the source directory to accelerate future builds
+      - name: Cache OpenWrt Build Directory
+        uses: actions/cache@v4
+        with:
+          path: immortalwrt_src
+          key: openwrt-build-${{ hashFiles('configs/immortal_h313.config', 'configs/my_packages.txt') }}
+          restore-keys: |
+            openwrt-build-
+
       - name: Build Docker Image
         run: docker build -t builder .
 
+      # Run compilation inside the customized Docker container
       - name: Run Build inside Docker
         run: |
+          mkdir -p immortalwrt_src
           docker run --rm \
             -v ${{ github.workspace }}:/home/build/workspace \
             -w /home/build/workspace \
             builder ./build.sh
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+      # Generate unique release tag based on current date and time
+      - name: Generate Release Tag
+        id: tag
+        run: |
+          echo "release_tag=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_OUTPUT
+          echo "release_date=$(date +'%Y-%m-%d %H:%M')" >> $GITHUB_OUTPUT
+
+      # Automatically publish compiled images to GitHub Releases
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: immortalwrt-binaries
-          path: immortalwrt_src/bin/targets/
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          name: ImmortalWrt Build - ${{ steps.tag.outputs.release_date }}
+          body: |
+            Automated ImmortalWrt build for Allwinner H313 platform.
+            
+            ### ℹ️ System Information
+            - **Base version:** ImmortalWrt 25.12 (Target commit: `bce0a385ed95e93bc86bd6ff3e5ec5fb25293454`)
+            - **Default IP address:** `192.168.1.1`
+            - **Boot method:** Runs from a USB flash drive (SD card)
+            
+            ### ⚠️ Known Issues
+            - Wi-Fi is currently **not working** in this build.
+          draft: false
+          prerelease: false
+          files: |
+            immortalwrt_src/bin/targets/*/*/*
+
+      # Remove heavy binaries before caching to save storage space
+      - name: Clean build directory before caching
+        run: |
+          rm -rf immortalwrt_src/bin/targets/
