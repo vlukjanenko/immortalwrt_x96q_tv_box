@@ -9,9 +9,11 @@ TARGET_COMMIT="bce0a385ed95e93bc86bd6ff3e5ec5fb25293454"
 
 sudo chown -R build:build .
 
-if [ ! -d "$BUILD_DIR" ]; then
+if [ ! -d "$BUILD_DIR/.git" ]; then
+    rm -rf "$BUILD_DIR"
     git clone $REPO_URL $BUILD_DIR
 fi
+
 cd "$BUILD_DIR"
 
 git fetch origin
